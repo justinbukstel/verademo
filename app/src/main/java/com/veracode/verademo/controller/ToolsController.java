@@ -50,8 +50,10 @@ public class ToolsController {
 
 		try {
 			/* START EXAMPLE VULNERABILITY */
-			proc = Runtime.getRuntime().exec(new String[] { "bash", "-c", "ping -c1 " + host });
+			/*proc = Runtime.getRuntime().exec(new String[] { "bash", "-c", "ping -c1 " + host });
 			/* END EXAMPLE VULNERABILITY */
+			ProcessBuilder pb = new ProcessBuilder("ping", "-c", "1", host);
+			Process process = pb.start();
 
 			proc.waitFor(5, TimeUnit.SECONDS);
 			InputStreamReader isr = new InputStreamReader(proc.getInputStream());
@@ -80,9 +82,11 @@ public class ToolsController {
 		Process proc;
 		try {
 			/* START EXAMPLE VULNERABILITY */
-			proc = Runtime.getRuntime().exec(new String[] { "bash", "-c", cmd });
+			/* proc = Runtime.getRuntime().exec(new String[] { "bash", "-c", cmd });
 			/* END EXAMPLE VULNERABILITY */
-
+			ProcessBuilder pb = new ProcessBuilder(cmd.split(" "));
+			Process process = pb.start();
+			
 			proc.waitFor(5, TimeUnit.SECONDS);
 			InputStreamReader isr = new InputStreamReader(proc.getInputStream());
 			BufferedReader br = new BufferedReader(isr);
