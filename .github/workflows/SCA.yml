@@ -12,8 +12,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: change Dir
-        run: cd app/
+     
       - name: Run Veracode SCA
         env:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
@@ -22,6 +21,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           create-issues: false   
+          path: app
           
 
               
