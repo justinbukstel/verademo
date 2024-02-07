@@ -27,7 +27,35 @@ jobs:
           ls target/
           
       - name: Veracode Dependency Scanning
-        run: curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --update-advisor
+  # You may pin to the exact commit or the version.
+  # uses: veracode/veracode-sca@0f32dfca4c613ff2a68fe52eacd4d340e47fd00b
+        uses: veracode/veracode-sca@v2.1.10
+        with:
+    # Authorization token to query and create issues
+          github_token: ${{ GH_TOKEN }}
+    # Run the SRCCLR with the `--quick` options
+          quick: false
+    # Show update advisor
+          update_advisor: false
+    # A git URL to work with in case the scan is not for the current repository
+          url: false
+    # An attribute to instruct the action to create an issue from found vulnerability or just simple text output
+          create-issues: false
+    # A path within the repository where the build definition starts
+          path: .
+    # Run the SRCCLR in debug mode
+          debug: false
+    # Run the SRCCLR with the `--skip-collectors` options
+          skip-collectors: false
+    # Run the SRCCLR with the `--allow-dirty` option
+          allow-dirty: true
+    # Run the SRCCLR with the `--recursive` option
+          recursive: false
+    # Run the SRCCLR with the `--skip-vms` option
+          skip-vms: false
+    # Run the SRCCLR with the `--no-graphs` option
+          no-graphs: false
+          
 
               
               
