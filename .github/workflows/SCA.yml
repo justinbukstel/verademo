@@ -38,7 +38,6 @@ jobs:
     # Show update advisor
           update_advisor: false
     # A git URL to work with in case the scan is not for the current repository
-          url: false
     # An attribute to instruct the action to create an issue from found vulnerability or just simple text output
           create-issues: false
     # A path within the repository where the build definition starts
