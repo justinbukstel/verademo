@@ -1,5 +1,4 @@
-
-name: Detailed Report PDF
+name: Summary Report GHA
 
 on: workflow_dispatch
 env:
@@ -11,30 +10,23 @@ jobs:
 
   get_summary_report:
     runs-on: ubuntu-latest
+    container:
+      image: veracode/api-signing:latest
     steps: 
-      - name: Install xmlstarlet
+      - name: get summary report
         run: |
-          sudo apt-get update
-          sudo apt-get install -y xmlstarlet
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with: 
-          repository: veracode/veracode-python-hmac-example
-      - name: Display repo content
-        run: |
-          ls -la
-          python3 -m pip install --upgrade pip wheel
-          python3 -m pip install httpie
-          pip install -r requirements.txt
+          cd /tmp
           export VERACODE_API_KEY_ID=${{ env.API_ID }}
           export VERACODE_API_KEY_SECRET=${{ env.API_KEY }}
-          ID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}" | jq -r '._embedded.applications[0].id')
-          echo GUID: ${ID}
-          BUILD_ID=$(http --auth-type veracode_hmac GET "https://analysiscenter.veracode.com/api/5.0/getbuildinfo.do?app_id=$ID" | sed -n 's/.*build_id="\([0-9]*\)".*/\1/p')
-          echo Build ID: $BUILD_ID
-          XML_RESPONSE=$(http --auth-type veracode_hmac GET "https://analysiscenter.veracode.com/api/5.0/detailedreport.do?build_id=$BUILD_ID")
-          echo "$XML_RESPONSE" > detailed_report.xml  # Save the XML to a file for debugging
-          cat detailed_report.xml  # Display the content of the saved XML file
+          GUID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}" | jq -r '._embedded.applications[0].guid')
+          echo GUID: ${GUID}
+          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/$GUID/summary_report" > summary.json
+      
+      - name: save summary file
+        uses: actions/upload-artifact@v2
+        with: 
+          name: summary-report
+          path: /tmp/summary.json 
           
       
         
